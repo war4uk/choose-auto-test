@@ -5,7 +5,6 @@ var CarFavsLayoutView = require('./views/carFavs');
 var CarStatsLayoutView = require('./views/carStats');
 
 var BlogList = require('./collections/blog');
-var CarInfoList = require('./collections/carInfo');
 
 
 var Controller = Marionette.Object.extend({
@@ -44,7 +43,6 @@ var Controller = Marionette.Object.extend({
 
   carInfo: function (model) {
     var layout = new CarInfoLayoutView({
-      collection: new CarInfoList(),
       carModel: model
     });
 

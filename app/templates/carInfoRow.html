@@ -5,11 +5,11 @@
     </div>
 </td>
 <td class="car-info-cell">
-    <%- model %>
+   <%- vendor %> <%- model %>
 </td>
 <td class="car-info-cell">
     <%- description %>
 </td>
 <td class="car-info-cell">
-    <%- action %>
+    <button class="btn do-action <%- (favourite && (action === "add")) ? "disabled" : "" %>" <%- (favourite && (action === "add")) ? "disabled" : "" %>> <%- action %> </button>
 </td>

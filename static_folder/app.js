@@ -11,39 +11,90 @@ module.exports = Backbone.Collection.extend({
   model: CarInfo
 });
 },{"../models/carInfo":6}],3:[function(require,module,exports){
-module.exports = function (carModel) {
-  console.log(carModel);
+module.exports =
+  {
+    getCarListPromise: getCarListPromise,
+    getFavCarListPromise: getFavCarListPromise,
+    updateCar: updateCar
+  }
+
+var initialCars = [
+  {
+    id: 1,
+    imageSrc: "http://carrrsmag.com/data_images/models/volvo-xc90/volvo-xc90-08.jpg",
+    vendor: "Volvo",
+    model: "XC90",
+    description: "XC90",
+    favourite: true
+  },
+  {
+    id: 2,
+    imageSrc: "http://assets.volvocars.com/ru/~/media/images/galleries/new-cars/s60/landing/s60rdesign_vcc07942.jpg?w=512",
+    vendor: "Volvo",
+    model: "XC90",
+    description: "S60",
+    favourite: false
+  },
+  {
+    id: 3,
+    imageSrc: "http://carrrsmag.com/data_images/models/mitsubishi-lancer/mitsubishi-lancer-06.jpg",
+    vendor: "Mitsubishi",
+    model: "Lancer",
+    description: "Lancer",
+    favourite: false
+  }
+];
+
+var itemsInStorage = localStorage.getItem('cars');
+if (!itemsInStorage) {
+  saveCars(initialCars);
+}
+
+
+function getCars() {
+  try {
+    return JSON.parse(localStorage.getItem('cars'));
+  } catch (err) {
+    return [];
+  }
+}
+
+function saveCars(cars) {
+  localStorage.setItem('cars', JSON.stringify(cars));
+}
+
+function getCarListPromise(carVendor) {
   return new Promise(function (resolve, reject) {
-    setTimeout(function () {
 
-      var cars = [
-        {
-          imageSrc: "http://carrrsmag.com/data_images/models/volvo-xc90/volvo-xc90-08.jpg",
-          model: "Volvo",
-          description: "XC90",
-        },
-        {
-          imageSrc: "http://assets.volvocars.com/ru/~/media/images/galleries/new-cars/s60/landing/s60rdesign_vcc07942.jpg?w=512",
-          model: "Volvo",
-          description: "S60"
-        },
-        {
-          imageSrc: "http://carrrsmag.com/data_images/models/mitsubishi-lancer/mitsubishi-lancer-06.jpg",
-          model: "Mitsubishi",
-          description: "Lancer"
-        }
-      ];
+    var result = getCars();
 
-      if (!!carModel) {
-        cars = cars.filter(function (car) {
-          return car.model === carModel;
-        });
-      }
+    if (!!carVendor) {
+      result = result.filter(function (car) {
+        return car.vendor.toLowerCase() === carVendor.toLowerCase();
+      });
+    }
 
-      resolve(cars)
-    }, 2000);
+    resolve(result)
   })
-} 
+}
+
+function getFavCarListPromise() {
+  return new Promise(function (resolve, reject) {
+    resolve(getCars().filter(function (car) {
+      return car.favourite;
+    }));
+  });
+}
+
+function updateCar(car) {
+  var cars = getCars();
+  cars.forEach(function (storedCar) {
+    if (car.id === storedCar.id) {
+      $.extend(storedCar, car);
+    }
+  });
+  saveCars(cars);
+}
 },{}],4:[function(require,module,exports){
 require('./setup');
 var Router = require('./router');
@@ -68,8 +119,14 @@ module.exports = Backbone.Model.extend({
   }
 }); 
 },{}],6:[function(require,module,exports){
-module.exports = Backbone.Model.extend();
-},{}],7:[function(require,module,exports){
+var updateCar = require('../data/carsList').updateCar;
+
+module.exports = Backbone.Model.extend({
+  save: function (attrs, options) {
+   updateCar({id: this.attributes.id, favourite: this.attributes.favourite});
+  }
+});
+},{"../data/carsList":3}],7:[function(require,module,exports){
 var LayoutView = require('./views/layout');
 
 var CarInfoLayoutView = require('./views/carInfo');
@@ -77,7 +134,6 @@ var CarFavsLayoutView = require('./views/carFavs');
 var CarStatsLayoutView = require('./views/carStats');
 
 var BlogList = require('./collections/blog');
-var CarInfoList = require('./collections/carInfo');
 
 
 var Controller = Marionette.Object.extend({
@@ -116,7 +172,6 @@ var Controller = Marionette.Object.extend({
 
   carInfo: function (model) {
     var layout = new CarInfoLayoutView({
-      collection: new CarInfoList(),
       carModel: model
     });
 
@@ -153,7 +208,7 @@ var Router = Marionette.AppRouter.extend({
 });
 
 module.exports = Router;
-},{"./collections/blog":1,"./collections/carInfo":2,"./views/carFavs":15,"./views/carInfo":16,"./views/carStats":17,"./views/layout":18}],8:[function(require,module,exports){
+},{"./collections/blog":1,"./views/carFavs":15,"./views/carInfo":16,"./views/carStats":17,"./views/layout":18}],8:[function(require,module,exports){
 window._ = require('underscore'); // Backbone can't see it otherwise
 
 window.Backbone = require('backbone');
@@ -178,13 +233,19 @@ __p+='<td class="car-info-cell preview-on-hover">\r\n    <img src="'+
 ((__t=( imageSrc ))==null?'':_.escape(__t))+
 '" alt="" class="car-info-image-thumb" />\r\n    <div class="car-info-image-preview">\r\n        <img src="'+
 ((__t=( imageSrc ))==null?'':_.escape(__t))+
-'" alt="" />\r\n    </div>\r\n</td>\r\n<td class="car-info-cell">\r\n    '+
+'" alt="" />\r\n    </div>\r\n</td>\r\n<td class="car-info-cell">\r\n   '+
+((__t=( vendor ))==null?'':_.escape(__t))+
+' '+
 ((__t=( model ))==null?'':_.escape(__t))+
 '\r\n</td>\r\n<td class="car-info-cell">\r\n    '+
 ((__t=( description ))==null?'':_.escape(__t))+
-'\r\n</td>\r\n<td class="car-info-cell">\r\n    '+
+'\r\n</td>\r\n<td class="car-info-cell">\r\n    <button class="btn do-action '+
+((__t=( (favourite && (action === "add")) ? "disabled" : "" ))==null?'':_.escape(__t))+
+'" '+
+((__t=( (favourite && (action === "add")) ? "disabled" : "" ))==null?'':_.escape(__t))+
+'> '+
 ((__t=( action ))==null?'':_.escape(__t))+
-'\r\n</td>';
+' </button>\r\n</td>';
 }
 return __p;
 };
@@ -202,7 +263,7 @@ return __p;
 module.exports = function(obj){
 var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
 with(obj||{}){
-__p+='Here goes car favs\r\n<div class=\'layout-hook\'></div>';
+__p+='<div class=\'layout-hook\'></div>';
 }
 return __p;
 };
@@ -211,7 +272,7 @@ return __p;
 module.exports = function(obj){
 var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
 with(obj||{}){
-__p+='<a href="#/list/Volvo"> Volvo </a> |\r\n<a href="#/list/Mitsubishi"> Mitsubishi </a> |\r\n<a href="#/list/Nissan"> Nissan </a> |\r\n<a href="#/list/Ford"> Ford </a> |\r\n<div class=\'table-hook\'></div>';
+__p+='<ul class="pagination">\r\n  <li><a href="#/list/Volvo">Volvo</a></li>\r\n  <li><a href="#/list/Mitsubishi">Mitsubishi</a></li>\r\n  <li><a href="#/list/Nissan">Nissan</a></li>\r\n  <li><a href="#/list/Ford">Ford</a></li>\r\n</ul>\r\n<div class=\'table-hook\'></div>';
 }
 return __p;
 };
@@ -226,17 +287,34 @@ return __p;
 };
 
 },{}],15:[function(require,module,exports){
+var CarInfoList = require('../collections/carInfo');
+var CarInfoTable = require('./subviews/carInfoTable');
+var getFavCarListPromise = require('../data/carsList').getFavCarListPromise;
+
 module.exports = Marionette.LayoutView.extend({
   template: require('../templates/carInfo/carFavs.html'),
 
   regions: {
     layout: '.layout-hook'
+  },
+  
+  onShow: function () {
+    var that = this;
+    getFavCarListPromise().then(function (data) {
+      var carInforTable = new CarInfoTable({
+        collection: new CarInfoList(data.map(function (item) {
+          return $.extend(item, { action: "remove" })
+        })),
+      });
+      that.showChildView('layout', carInforTable);
+    });
   }
 });
 
-},{"../templates/carInfo/carFavs.html":12}],16:[function(require,module,exports){
+},{"../collections/carInfo":2,"../data/carsList":3,"../templates/carInfo/carFavs.html":12,"./subviews/carInfoTable":19}],16:[function(require,module,exports){
+var CarInfoList = require('../collections/carInfo');
 var CarInfoTable = require('./subviews/carInfoTable');
-var getCarsListPromise = require('../data/carsList');
+var getCarsListPromise = require('../data/carsList').getCarListPromise;
 
 module.exports = Marionette.LayoutView.extend({
   template: require('../templates/carInfo/carList.html'),
@@ -247,19 +325,18 @@ module.exports = Marionette.LayoutView.extend({
 
   onShow: function () {
     var that = this;
-    console.log(this);
     getCarsListPromise(this.options.carModel).then(function (data) {
       var carInforTable = new CarInfoTable({
-        collection: new Backbone.Collection(data.map(function (item) {
+        collection: new CarInfoList(data.map(function (item) {
           return $.extend(item, { action: "add" })
-        }))
+        })),
       });
       that.showChildView('tableContent', carInforTable);
     });
   }
 });
 
-},{"../data/carsList":3,"../templates/carInfo/carList.html":13,"./subviews/carInfoTable":19}],17:[function(require,module,exports){
+},{"../collections/carInfo":2,"../data/carsList":3,"../templates/carInfo/carList.html":13,"./subviews/carInfoTable":19}],17:[function(require,module,exports){
 module.exports = Marionette.LayoutView.extend({
   template: require('../templates/carInfo/carStats.html'),
 
@@ -320,7 +397,7 @@ var CarInfoRow = Marionette.ItemView.extend({
   tagName: 'tr',
   className: 'car-info-row',
   triggers: {
-    click: 'select:entry'
+    "click .do-action": "doAction"
   },
   onRender: function () {
     var img = $('.car-info-image-preview', this.$el);
@@ -331,6 +408,15 @@ var CarInfoRow = Marionette.ItemView.extend({
       }, function (event) {
         img.fadeOut(0)
       });
+  },
+
+  initialize: function () {
+    this.model.on('change', this.render, this);
+  },
+
+  onDoAction: function () {
+    this.model.set({ favourite: this.model.attributes.action === "add" });
+    this.model.save();
   }
 });
 
@@ -339,6 +425,14 @@ var CarList = Marionette.CompositeView.extend({
   template: require('../../templates/carInfoTable.html'),
   childView: CarInfoRow,
   childViewContainer: ".car-info-rows",
+  childEvents: {
+    doAction: function (child) {
+      if (!child.model.attributes.favourite) {
+        var view = this.children.findByModel(child.model);
+        this.removeChildView(view);
+      }
+    }
+  }
 });
 
 module.exports = CarList;
