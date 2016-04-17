@@ -15,44 +15,27 @@ module.exports =
   {
     getCarListPromise: getCarListPromise,
     getFavCarListPromise: getFavCarListPromise,
+    getVendorStatsPromise: getVendorStatsPromise,
     updateCar: updateCar
   }
 
-var initialCars = [
-  {
-    id: 1,
-    imageSrc: "http://carrrsmag.com/data_images/models/volvo-xc90/volvo-xc90-08.jpg",
-    vendor: "Volvo",
-    model: "XC90",
-    description: "XC90",
-    favourite: true,
-    selectedCount: 1
-  },
-  {
-    id: 2,
-    imageSrc: "http://assets.volvocars.com/ru/~/media/images/galleries/new-cars/s60/landing/s60rdesign_vcc07942.jpg?w=512",
-    vendor: "Volvo",
-    model: "XC90",
-    description: "S60",
-    favourite: false,
-    selectedCount: 0
-  },
-  {
-    id: 3,
-    imageSrc: "http://carrrsmag.com/data_images/models/mitsubishi-lancer/mitsubishi-lancer-06.jpg",
-    vendor: "Mitsubishi",
-    model: "Lancer",
-    description: "Lancer",
-    favourite: false,
-    selectedCount: 0
-  }
-];
-
 var itemsInStorage = localStorage.getItem('cars');
 if (!itemsInStorage) {
-  saveCars(initialCars);
+  saveCars(getInitialCarData());
 }
 
+function getVendorStatsPromise() {
+  return new Promise(function (resolve, reject) {
+    var vendorStats = getCars().reduce(function (prevValue, car) {
+      prevValue[car.vendor] = (prevValue[car.vendor] || 0) + car.selectCount;
+      return prevValue;
+    }, {});
+
+    resolve(vendorStats);
+  });
+
+
+}
 
 function getCars() {
   try {
@@ -97,6 +80,191 @@ function updateCar(car) {
     }
   });
   saveCars(cars);
+}
+
+function getInitialCarData() {
+  return [
+    {
+      id: 1,
+      imageSrc: "http://carrrsmag.com/data_images/models/volvo-xc90/volvo-xc90-08.jpg",
+      vendor: "Volvo",
+      model: "XC90",
+      description: "XC90",
+      favourite: false,
+      selectCount: 0
+    },
+    {
+      id: 2,
+      imageSrc: "http://assets.volvocars.com/ru/~/media/images/galleries/new-cars/s60/landing/s60rdesign_vcc07942.jpg?w=512",
+      vendor: "Volvo",
+      model: "XC90",
+      description: "XC90",
+      favourite: false,
+      selectCount: 0
+    },
+    {
+      id: 3,
+      imageSrc: "http://carspravka.ru/images/auto/e841e640ac241d374eb38ff7ede006d9.jpg",
+      vendor: "Volvo",
+      model: "XC60",
+      description: "XC60",
+      favourite: false,
+      selectCount: 0
+    },
+    {
+      id: 4,
+      imageSrc: "http://gredx.ru/wp-content/uploads/2013/10/Volvo-FH_RU.jpg",
+      vendor: "Volvo",
+      model: "FH",
+      description: "FH",
+      favourite: false,
+      selectCount: 0
+    },
+    {
+      id: 5,
+      imageSrc: "https://upload.wikimedia.org/wikipedia/commons/5/57/Volvo_V40_2012_ID42221_280212.jpg",
+      vendor: "Volvo",
+      model: "V40",
+      description: "V40",
+      favourite: false,
+      selectCount: 0
+    },
+    {
+      id: 6,
+      imageSrc: "http://carrrsmag.com/data_images/models/mitsubishi-lancer/mitsubishi-lancer-06.jpg",
+      vendor: "Mitsubishi",
+      model: "Lancer",
+      description: "Lancer",
+      favourite: false,
+      selectCount: 0
+    },
+    {
+      id: 7,
+      imageSrc: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Mitsubishi_Pajero_Exceed.jpg",
+      vendor: "Mitsubishi",
+      model: "Pajero",
+      description: "Pajero",
+      favourite: false,
+      selectCount: 0
+    },
+    {
+      id: 8,
+      imageSrc: "http://a2goos.com/data_images/models/mitsubishi-eclipse/mitsubishi-eclipse-05.jpg",
+      vendor: "Mitsubishi",
+      model: "Eclipse",
+      description: "Eclipse",
+      favourite: false,
+      selectCount: 0
+    },
+    {
+      id: 9,
+      imageSrc: "http://mitsubishi-motors.ie/wp-content/uploads/2014/10/mitsubishi-outlander-business-white-2015-023-e1447835810320.jpg",
+      vendor: "Mitsubishi",
+      model: "Outlander",
+      description: "Outlander",
+      favourite: false,
+      selectCount: 0
+    },
+    {
+      id: 10,
+      imageSrc: "http://dokonline.com/uploads/posts/2016-01/1452752156_1.jpg",
+      vendor: "Mitsubishi",
+      model: "L200",
+      description: "L200",
+      favourite: false,
+      selectCount: 0
+    },
+    {
+      id: 11,
+      imageSrc: "http://carrrsmag.com/data_images/models/ford-mustang/ford-mustang-06.jpg",
+      vendor: "Ford",
+      model: "Mustang",
+      description: "Mustang",
+      favourite: false,
+      selectCount: 0
+    },
+    {
+      id: 12,
+      imageSrc: "http://carrrsmag.com/data_images/models/ford-focus/ford-focus-03.jpg",
+      vendor: "Ford",
+      model: "Focus",
+      description: "Focus",
+      favourite: false,
+      selectCount: 0
+    },
+    {
+      id: 13,
+      imageSrc: "http://a2goos.com/data_images/models/ford-explorer/ford-explorer-02.jpg",
+      vendor: "Ford",
+      model: "Explorer",
+      description: "Explorer",
+      favourite: false,
+      selectCount: 0
+    },
+    {
+      id: 14,
+      imageSrc: "http://carrrsmag.com/data_images/models/ford-mondeo/ford-mondeo-01.jpg",
+      vendor: "Ford",
+      model: "Mondeo",
+      description: "Mondeo",
+      favourite: false,
+      selectCount: 0
+    },
+    {
+      id: 15,
+      imageSrc: "https://upload.wikimedia.org/wikipedia/commons/5/53/2014_Ford_Transit_Custom_(VN)_290S_van_(2015-07-03)_01.jpg",
+      vendor: "Ford",
+      model: "Transit",
+      description: "Transit",
+      favourite: false,
+      selectCount: 0
+    },
+    {
+      id: 16,
+      imageSrc: "http://carrrsmag.com/data_images/models/nissan-skyline/nissan-skyline-03.jpg",
+      vendor: "Nissan",
+      model: "Skyline",
+      description: "Skyline",
+      favourite: false,
+      selectCount: 0
+    },
+    {
+      id: 17,
+      imageSrc: "http://carrrsmag.com/data_images/models/nissan-qashqai/nissan-qashqai-08.jpg",
+      vendor: "Nissan",
+      model: "Qashqai",
+      description: "Qashqai",
+      favourite: false,
+      selectCount: 0
+    },
+    {
+      id: 18,
+      imageSrc: "http://carrrsmag.com/data_images/models/nissan-juke/nissan-juke-03.jpg",
+      vendor: "Nissan",
+      model: "Juke",
+      description: "Juke",
+      favourite: false,
+      selectCount: 0
+    },
+    {
+      id: 19,
+      imageSrc: "http://s.auto.drom.ru/img4/catalog/photos/fullsize/nissan/teana/nissan_teana_36239.jpg",
+      vendor: "Nissan",
+      model: "Teana",
+      description: "Teana",
+      favourite: false,
+      selectCount: 0
+    },
+    {
+      id: 20,
+      imageSrc: "http://i.quto.ru/c533x400/5087c8de14b02.jpeg",
+      vendor: "Nissan",
+      model: "Almera",
+      description: "Almera",
+      favourite: false,
+      selectCount: 0
+    }
+  ];
 }
 },{}],4:[function(require,module,exports){
 require('./setup');
@@ -218,7 +386,7 @@ var Router = Marionette.AppRouter.extend({
 });
 
 module.exports = Router;
-},{"./collections/blog":1,"./views/carFavs":15,"./views/carInfo":16,"./views/carStats":17,"./views/layout":18}],8:[function(require,module,exports){
+},{"./collections/blog":1,"./views/carFavs":16,"./views/carInfo":17,"./views/carStats":18,"./views/layout":19}],8:[function(require,module,exports){
 window._ = require('underscore'); // Backbone can't see it otherwise
 
 window.Backbone = require('backbone');
@@ -226,7 +394,7 @@ window.Backbone.$ = window.$; // Use the jQuery from the script tag
 
 window.Backbone.Marionette = require('backbone.marionette');
 window.Marionette = window.Backbone.Marionette;
-},{"backbone":23,"backbone.marionette":21,"underscore":25}],9:[function(require,module,exports){
+},{"backbone":24,"backbone.marionette":22,"underscore":26}],9:[function(require,module,exports){
 module.exports = function(obj){
 var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
 with(obj||{}){
@@ -273,7 +441,7 @@ return __p;
 module.exports = function(obj){
 var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
 with(obj||{}){
-__p+='<div class=\'layout-hook\'></div>';
+__p+='<div class=\'counter-hook\'></div>\r\n<div class=\'layout-hook\'></div>\r\n';
 }
 return __p;
 };
@@ -288,8 +456,26 @@ return __p;
 };
 
 },{}],14:[function(require,module,exports){
-arguments[4][12][0].apply(exports,arguments)
-},{"dup":12}],15:[function(require,module,exports){
+module.exports = function(obj){
+var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
+with(obj||{}){
+__p+='<div class=\'layout-hook\'></div>';
+}
+return __p;
+};
+
+},{}],15:[function(require,module,exports){
+module.exports = function(obj){
+var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
+with(obj||{}){
+__p+='<div>\r\n  Total Favourites: '+
+((__t=( count ))==null?'':_.escape(__t))+
+'\r\n</div>';
+}
+return __p;
+};
+
+},{}],16:[function(require,module,exports){
 var CarInfoList = require('../collections/carInfo');
 var CarInfoTable = require('./subviews/carInfoTable');
 var getFavCarListPromise = require('../data/carsList').getFavCarListPromise;
@@ -298,9 +484,10 @@ module.exports = Marionette.LayoutView.extend({
   template: require('../templates/carInfo/carFavs.html'),
 
   regions: {
-    layout: '.layout-hook'
+    layout: '.layout-hook',
+    counter: '.counter-hook'
   },
-  
+
   onShow: function () {
     var that = this;
     getFavCarListPromise().then(function (data) {
@@ -309,12 +496,26 @@ module.exports = Marionette.LayoutView.extend({
           return $.extend(item, { action: "remove" })
         })),
       });
+
+      carInforTable.on("fav:removed", function (args) {
+        that.showChildView('counter', new favsCounter({
+          model: new Backbone.Model({ count: carInforTable.children.length })
+        }));
+      });
+
+      var favsCounter = Marionette.ItemView.extend({
+        template: require('../templates/carInfo/favsCounter.html'),
+      });
+
       that.showChildView('layout', carInforTable);
+      that.showChildView('counter', new favsCounter({
+        model: new Backbone.Model({ count: data.length })
+      }));
     });
   }
 });
 
-},{"../collections/carInfo":2,"../data/carsList":3,"../templates/carInfo/carFavs.html":12,"./subviews/carInfoTable":19}],16:[function(require,module,exports){
+},{"../collections/carInfo":2,"../data/carsList":3,"../templates/carInfo/carFavs.html":12,"../templates/carInfo/favsCounter.html":15,"./subviews/carInfoTable":20}],17:[function(require,module,exports){
 var CarInfoList = require('../collections/carInfo');
 var CarInfoTable = require('./subviews/carInfoTable');
 var getCarsListPromise = require('../data/carsList').getCarListPromise;
@@ -339,8 +540,8 @@ module.exports = Marionette.LayoutView.extend({
   }
 });
 
-},{"../collections/carInfo":2,"../data/carsList":3,"../templates/carInfo/carList.html":13,"./subviews/carInfoTable":19}],17:[function(require,module,exports){
-var getFavCarListPromise = require('../data/carsList').getFavCarListPromise;
+},{"../collections/carInfo":2,"../data/carsList":3,"../templates/carInfo/carList.html":13,"./subviews/carInfoTable":20}],18:[function(require,module,exports){
+var getVendorStatsPromise = require('../data/carsList').getVendorStatsPromise;
 
 module.exports = Marionette.LayoutView.extend({
     template: require('../templates/carInfo/carStats.html'),
@@ -349,21 +550,42 @@ module.exports = Marionette.LayoutView.extend({
         layout: '.layout-hook'
     },
     onShow: function () {
-        getFavCarListPromise().then(function (data) {
+        getVendorStatsPromise().then(function (data) {
+            console.log(data);
+            var xNames = Object.getOwnPropertyNames(data);
+            var xValues = xNames.map(function (vendorName) { return data[vendorName] });
+            var types = {};
+
+            types['Total additions to fav'] = 'bar';
+            xValues.unshift('Total additions to fav');
+            xNames.unshift('x');
+
+            var axis = {
+                x: {
+                    type: 'category'
+                }
+            };
+
+            var chartData = {
+                x: 'x',
+                columns: [
+                    xNames,
+                    xValues,
+                ],
+                types: types,
+            };
+
+
+            console.log(xValues);
+            //Object.values(data).unshift('Total additions to fav');
             var chart = c3.generate({
                 bindto: '.layout-hook',
-                data: {
-                    columns: [
-                        ['data1', 30, 200, 100, 400, 150, 250],
-                    ],
-                    type: 'bar'
-                },
+                data: chartData,
+                axis: axis,
                 bar: {
                     width: {
-                        ratio: 0.5 // this makes bar width 50% of length between ticks
+                        ratio: 0.5
                     }
-                    // or
-                    //width: 100 // this makes bar width 100px
                 }
             });
 
@@ -371,7 +593,7 @@ module.exports = Marionette.LayoutView.extend({
 
     }
 });
-},{"../data/carsList":3,"../templates/carInfo/carStats.html":14}],18:[function(require,module,exports){
+},{"../data/carsList":3,"../templates/carInfo/carStats.html":14}],19:[function(require,module,exports){
 var LayoutView = Marionette.LayoutView.extend({
   template: require('../templates/blog/layout.html'),
 
@@ -417,7 +639,7 @@ var LayoutView = Marionette.LayoutView.extend({
 });
 
 module.exports = LayoutView;
-},{"../templates/blog/layout.html":9}],19:[function(require,module,exports){
+},{"../templates/blog/layout.html":9}],20:[function(require,module,exports){
 var CarInfoRow = Marionette.ItemView.extend({
   template: require('../../templates/carInfoRow.html'),
 
@@ -457,13 +679,14 @@ var CarList = Marionette.CompositeView.extend({
       if (!child.model.attributes.favourite) {
         var view = this.children.findByModel(child.model);
         this.removeChildView(view);
+        this.triggerMethod('fav:removed');
       }
     }
   }
 });
 
 module.exports = CarList;
-},{"../../templates/carInfoRow.html":10,"../../templates/carInfoTable.html":11}],20:[function(require,module,exports){
+},{"../../templates/carInfoRow.html":10,"../../templates/carInfoTable.html":11}],21:[function(require,module,exports){
 // Backbone.BabySitter
 // -------------------
 // v0.1.11
@@ -655,7 +878,7 @@ module.exports = CarList;
 
 }));
 
-},{"backbone":23,"underscore":25}],21:[function(require,module,exports){
+},{"backbone":24,"underscore":26}],22:[function(require,module,exports){
 // MarionetteJS (Backbone.Marionette)
 // ----------------------------------
 // v2.4.4
@@ -4162,7 +4385,7 @@ module.exports = CarList;
   return Marionette;
 }));
 
-},{"backbone":23,"backbone.babysitter":20,"backbone.wreqr":22,"underscore":25}],22:[function(require,module,exports){
+},{"backbone":24,"backbone.babysitter":21,"backbone.wreqr":23,"underscore":26}],23:[function(require,module,exports){
 // Backbone.Wreqr (Backbone.Marionette)
 // ----------------------------------
 // v1.3.6
@@ -4599,7 +4822,7 @@ module.exports = CarList;
 
 }));
 
-},{"backbone":23,"underscore":25}],23:[function(require,module,exports){
+},{"backbone":24,"underscore":26}],24:[function(require,module,exports){
 (function (global){
 //     Backbone.js 1.2.3
 
@@ -6497,7 +6720,7 @@ module.exports = CarList;
 }));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"jquery":24,"underscore":25}],24:[function(require,module,exports){
+},{"jquery":25,"underscore":26}],25:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.3
  * http://jquery.com/
@@ -16341,7 +16564,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors

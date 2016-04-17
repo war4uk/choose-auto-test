@@ -1,4 +1,4 @@
-var getFavCarListPromise = require('../data/carsList').getFavCarListPromise;
+var getVendorStatsPromise = require('../data/carsList').getVendorStatsPromise;
 
 module.exports = Marionette.LayoutView.extend({
     template: require('../templates/carInfo/carStats.html'),
@@ -7,21 +7,42 @@ module.exports = Marionette.LayoutView.extend({
         layout: '.layout-hook'
     },
     onShow: function () {
-        getFavCarListPromise().then(function (data) {
+        getVendorStatsPromise().then(function (data) {
+            console.log(data);
+            var xNames = Object.getOwnPropertyNames(data);
+            var xValues = xNames.map(function (vendorName) { return data[vendorName] });
+            var types = {};
+
+            types['Total additions to fav'] = 'bar';
+            xValues.unshift('Total additions to fav');
+            xNames.unshift('x');
+
+            var axis = {
+                x: {
+                    type: 'category'
+                }
+            };
+
+            var chartData = {
+                x: 'x',
+                columns: [
+                    xNames,
+                    xValues,
+                ],
+                types: types,
+            };
+
+
+            console.log(xValues);
+            //Object.values(data).unshift('Total additions to fav');
             var chart = c3.generate({
                 bindto: '.layout-hook',
-                data: {
-                    columns: [
-                        ['data1', 30, 200, 100, 400, 150, 250],
-                    ],
-                    type: 'bar'
-                },
+                data: chartData,
+                axis: axis,
                 bar: {
                     width: {
-                        ratio: 0.5 // this makes bar width 50% of length between ticks
+                        ratio: 0.5
                     }
-                    // or
-                    //width: 100 // this makes bar width 100px
                 }
             });
 

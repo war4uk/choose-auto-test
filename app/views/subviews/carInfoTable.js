@@ -37,6 +37,7 @@ var CarList = Marionette.CompositeView.extend({
       if (!child.model.attributes.favourite) {
         var view = this.children.findByModel(child.model);
         this.removeChildView(view);
+        this.triggerMethod('fav:removed');
       }
     }
   }
