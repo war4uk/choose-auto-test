@@ -1,7 +1,3 @@
-var List = require('./list');
-var Blog = require('./blog');
-
-
 var LayoutView = Marionette.LayoutView.extend({
   template: require('../templates/blog/layout.html'),
 
@@ -9,13 +5,13 @@ var LayoutView = Marionette.LayoutView.extend({
     layout: '.layout-hook'
   },
 
-  onShowBlogList: function() {
-    var list = new List({collection: this.collection});
-    this.showChildView('layout', list);
+  /*onShowBlogList: function() {
+  //  var list = new List({collection: this.collection});
+  //  this.showChildView('layout', list);
 
-    /*  Remember - this only sets the fragment, so we can safely call this as
-        often as we like with no negative side-effects.
-    */
+    //  Remember - this only sets the fragment, so we can safely call this as
+    //    often as we like with no negative side-effects.
+    //
     Backbone.history.navigate('blog/');
 
   },
@@ -29,10 +25,10 @@ var LayoutView = Marionette.LayoutView.extend({
     this.showBlog(model);
   },
 
-  /** Child-initiated alias to onShowBlogList */
+  // Child-initiated alias to onShowBlogList 
   onChildviewShowBlogList: function() {
-    this.triggerMethod('show:car:list', new Blog({}));
-  },
+    this.triggerMethod('show:blog:list');
+  },*/
 
   /** Share some simple logic from our subviews */
   showBlog: function(blogModel) {

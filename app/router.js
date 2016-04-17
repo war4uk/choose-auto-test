@@ -5,6 +5,7 @@ var CarFavsLayoutView = require('./views/carFavs');
 var CarStatsLayoutView = require('./views/carStats');
 
 var BlogList = require('./collections/blog');
+var CarInfoList = require('./collections/carInfo');
 
 
 var Controller = Marionette.Object.extend({
@@ -20,7 +21,7 @@ var Controller = Marionette.Object.extend({
     var initialData = this.getOption('initialData');
 
     var layout = new LayoutView({
-      collection: new BlogList(initialData.posts)
+      collection: new BlogList([])
     });
 
     this.getOption('regionManager').get('main').show(layout);
@@ -41,8 +42,12 @@ var Controller = Marionette.Object.extend({
     layout.triggerMethod('show:blog:entry', entry);
   },
 
-  carInfo: function () {
-    var layout = new CarInfoLayoutView();
+  carInfo: function (model) {
+    var layout = new CarInfoLayoutView({
+      collection: new CarInfoList(),
+      carModel: model
+    });
+
     this.getOption('regionManager').get('main').show(layout);
   },
   carFavs: function () {
@@ -60,6 +65,7 @@ var Router = Marionette.AppRouter.extend({
     'blog/': 'blogList',
     'blog/:entry': 'blogEntry',
     'list': 'carInfo',
+    'list/:model': 'carInfo',
     'fav': 'carFavs',
     'stats': 'carStats'
   },
