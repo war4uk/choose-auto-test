@@ -8,7 +8,7 @@ var CarInfoRow = Marionette.ItemView.extend({
   },
   onRender: function () {
     var img = $('.car-info-image-preview', this.$el);
-    var previewEl = $('.preview-on-hover', this.$el);
+    var previewEl = $('.preview-on-hover .car-info-image-thumb', this.$el);
     previewEl.hover(
       function (event) {
         img.fadeIn(200)
