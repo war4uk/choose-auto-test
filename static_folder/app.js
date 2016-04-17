@@ -25,7 +25,8 @@ var initialCars = [
     vendor: "Volvo",
     model: "XC90",
     description: "XC90",
-    favourite: true
+    favourite: true,
+    selectedCount: 1
   },
   {
     id: 2,
@@ -33,7 +34,8 @@ var initialCars = [
     vendor: "Volvo",
     model: "XC90",
     description: "S60",
-    favourite: false
+    favourite: false,
+    selectedCount: 0
   },
   {
     id: 3,
@@ -41,7 +43,8 @@ var initialCars = [
     vendor: "Mitsubishi",
     model: "Lancer",
     description: "Lancer",
-    favourite: false
+    favourite: false,
+    selectedCount: 0
   }
 ];
 
@@ -123,7 +126,14 @@ var updateCar = require('../data/carsList').updateCar;
 
 module.exports = Backbone.Model.extend({
   save: function (attrs, options) {
-   updateCar({id: this.attributes.id, favourite: this.attributes.favourite});
+    var isFav = this.attributes.favourite;
+    var selectCount = this.attributes.selectCount;
+     
+     
+   if (!this.previous('favourite') && isFav) {
+     selectCount = selectCount + 1;
+   }
+   updateCar({id: this.attributes.id, favourite: this.attributes.favourite, selectCount: selectCount});
   }
 });
 },{"../data/carsList":3}],7:[function(require,module,exports){
@@ -278,15 +288,8 @@ return __p;
 };
 
 },{}],14:[function(require,module,exports){
-module.exports = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='Here goes car stats\r\n<div class=\'layout-hook\'></div>';
-}
-return __p;
-};
-
-},{}],15:[function(require,module,exports){
+arguments[4][12][0].apply(exports,arguments)
+},{"dup":12}],15:[function(require,module,exports){
 var CarInfoList = require('../collections/carInfo');
 var CarInfoTable = require('./subviews/carInfoTable');
 var getFavCarListPromise = require('../data/carsList').getFavCarListPromise;
@@ -337,14 +340,38 @@ module.exports = Marionette.LayoutView.extend({
 });
 
 },{"../collections/carInfo":2,"../data/carsList":3,"../templates/carInfo/carList.html":13,"./subviews/carInfoTable":19}],17:[function(require,module,exports){
-module.exports = Marionette.LayoutView.extend({
-  template: require('../templates/carInfo/carStats.html'),
+var getFavCarListPromise = require('../data/carsList').getFavCarListPromise;
 
-  regions: {
-    layout: '.layout-hook'
-  }
+module.exports = Marionette.LayoutView.extend({
+    template: require('../templates/carInfo/carStats.html'),
+
+    regions: {
+        layout: '.layout-hook'
+    },
+    onShow: function () {
+        getFavCarListPromise().then(function (data) {
+            var chart = c3.generate({
+                bindto: '.layout-hook',
+                data: {
+                    columns: [
+                        ['data1', 30, 200, 100, 400, 150, 250],
+                    ],
+                    type: 'bar'
+                },
+                bar: {
+                    width: {
+                        ratio: 0.5 // this makes bar width 50% of length between ticks
+                    }
+                    // or
+                    //width: 100 // this makes bar width 100px
+                }
+            });
+
+        });
+
+    }
 });
-},{"../templates/carInfo/carStats.html":14}],18:[function(require,module,exports){
+},{"../data/carsList":3,"../templates/carInfo/carStats.html":14}],18:[function(require,module,exports){
 var LayoutView = Marionette.LayoutView.extend({
   template: require('../templates/blog/layout.html'),
 

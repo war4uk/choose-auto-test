@@ -12,7 +12,8 @@ var initialCars = [
     vendor: "Volvo",
     model: "XC90",
     description: "XC90",
-    favourite: true
+    favourite: true,
+    selectedCount: 1
   },
   {
     id: 2,
@@ -20,7 +21,8 @@ var initialCars = [
     vendor: "Volvo",
     model: "XC90",
     description: "S60",
-    favourite: false
+    favourite: false,
+    selectedCount: 0
   },
   {
     id: 3,
@@ -28,7 +30,8 @@ var initialCars = [
     vendor: "Mitsubishi",
     model: "Lancer",
     description: "Lancer",
-    favourite: false
+    favourite: false,
+    selectedCount: 0
   }
 ];
 
