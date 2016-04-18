@@ -11,5 +11,6 @@
     <%- description %>
 </td>
 <td class="car-info-cell">
-    <button class="btn do-action <%- (favourite && (action === "add")) ? "disabled" : "" %>" <%- (favourite && (action === "add")) ? "disabled" : "" %>> <%- action %> </button>
+    <button class="btn do-action <%- (favourite && (action === "add")) ? "disabled" : "" %>" <%- (favourite && (action === "add")) ? "disabled" : "" %>> 
+    <%- action === "add" ? "Add to Favourites" : "Remove From Favourites" %> </button>
 </td>

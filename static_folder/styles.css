@@ -19,6 +19,7 @@
 
 .preview-on-hover {
     position: relative;
+    width: 250px;
 }
 
 .car-info-header {
